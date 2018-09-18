@@ -30,7 +30,7 @@ public class EdatrapsApplication {
 		SpringApplication.run(EdatrapsApplication.class, args);
 	}
 
-	@Scheduled(fixedRate = 2000L)
+	@Scheduled(fixedRate = 500L)
 	public void sessionClosed() {
 		ChargingSessionFinished event = new ChargingSessionFinished("session", Instant.now(), BigDecimal.TEN);
 		Map<String, Object> headers = new HashMap<>();
@@ -38,8 +38,5 @@ public class EdatrapsApplication {
 
 		source.output().send(new GenericMessage<>(event, headers));
 
-		//ChargingSessionFinishedV2 eventV2 = new ChargingSessionFinishedV2("session", Instant.now(), BigDecimal.TEN, "customer");
-		//Map<String, Object> headersV2 = new HashMap<>();
-		//headersV2.put("type", eventV2.getType());
 	}
 }
