@@ -18,7 +18,7 @@ public class TaxCalculator {
 
 
     @StreamListener(target = Sink.INPUT)
-    public void handle(ChargingSessionFinishedV2 event) {
+    public void handle(ChargingSessionFinished event) {
 
     }
 
