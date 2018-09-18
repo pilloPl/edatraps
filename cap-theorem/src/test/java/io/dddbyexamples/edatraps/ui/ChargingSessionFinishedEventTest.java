@@ -46,33 +46,8 @@ public class ChargingSessionFinishedEventTest {
 
     @Test
     public void shouldEmitAnEvent() {
-        //given
-        chargerSendsInfoThatSessionWasStarted();
 
-        //when
-        chargerSendsInfoThatSessionWasFinished();
 
-        //then
-        sessionMarkedAsFinished();
-        assertThat(events.poll().getHeaders().containsValue("session-finished")).isTrue();
-    }
-
-    @Test
-    public void shouldEmitAnEventAsync() {
-        //given
-        chargerSendsInfoThatSessionWasStarted();
-
-        //when
-        chargerSendsInfoThatSessionWasFinished();
-
-        //then
-        sessionMarkedAsFinished();
-        Awaitility.await().atMost(Duration.FIVE_SECONDS).until(this::eventWasSent);
-    }
-
-    private boolean eventWasSent() {
-        Message msg = events.poll();
-        return msg != null && msg.getHeaders().containsValue("session-finished");
     }
 
     private void sessionMarkedAsFinished() {

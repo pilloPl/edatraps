@@ -1,6 +1,5 @@
 package io.dddbyexamples.edatraps;
 
-import io.dddbyexamples.edatraps.model.ChargingSession;
 import io.dddbyexamples.edatraps.persistance.ChargingSessionRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,7 +9,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.transaction.Transactional;
-import java.util.Random;
 
 @SpringBootApplication
 @EnableBinding(Sink.class)
@@ -26,14 +24,7 @@ public class EdatrapsApplication {
 	@Scheduled(fixedRate = 2000)
 	@Transactional
 	public void charginsSessions() {
-		ChargingSession session = new ChargingSession(String.valueOf(new Random().nextLong()));
-		chargingSessionRepository.save(session);
-		ChargingSession fake = chargingSessionRepository.getOne("fake");
-		if(fake.isFinished()) {
-			fake.restart();
-		} else {
-			fake.finish();
-		}
+
 	}
 
 

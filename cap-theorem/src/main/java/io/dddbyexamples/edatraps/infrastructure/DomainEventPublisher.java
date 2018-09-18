@@ -27,24 +27,7 @@ public class DomainEventPublisher {
         this.objectMapper = objectMapper;
     }
 
-    public void publish(DomainEvent event) {
-        Map<String, Object> headers = new HashMap<>();
-        headers.put("type", event.getType());
-        source.output().send(new GenericMessage<>(event, headers));
-    }
-
-    public void publishAfterCommit(DomainEvent event) {
-        Map<String, Object> headers = new HashMap<>();
-        headers.put("type", event.getType());
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-            @Override
-            public void afterCommit(){
-                source.output().send(new GenericMessage<>(event, headers));
-            }
-        });
-    }
-
-    public void saveAndPublishAfterCommit(DomainEvent domainEvent) {
+    public void save(DomainEvent domainEvent) {
         try {
             domainEventStorage.save(new StoredDomainEvent(objectMapper.writeValueAsString(domainEvent), domainEvent.getType()));
         } catch (JsonProcessingException e) {

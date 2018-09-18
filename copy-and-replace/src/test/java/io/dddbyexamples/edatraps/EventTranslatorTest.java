@@ -38,8 +38,6 @@ public class EventTranslatorTest {
 
     @Autowired ObjectMapper objectMapper;
 
-    @Autowired
-
 
     @Before
     public void setup() {
@@ -48,27 +46,10 @@ public class EventTranslatorTest {
 
     @Test
     public void shouldCopyAndTranslateEvents() throws IOException {
-        //given
-        Instant date = Instant.now();
-        oldEvent(new ChargingSessionFinished("session", date, BigDecimal.TEN));
 
-        //then
-        thereIsNewEvent(new ChargingSessionFinishedV2("session", date, BigDecimal.TEN, "I dont care"));
+
     }
 
-    private void thereIsNewEvent(ChargingSessionFinishedV2 chargingSessionFinishedV2) throws IOException {
-        Message msg = (eventsV2.poll());
-        assertThat(msg).isNotNull();
-        assertThat(msg.getHeaders()).containsEntry("type", "session-finished-v2");
 
-        ChargingSessionFinishedV2 event = objectMapper.readValue(msg.getPayload().toString(), ChargingSessionFinishedV2.class);
-        assertThat(event.equals(chargingSessionFinishedV2)).isTrue();
-    }
-
-    private void oldEvent(DomainEvent event) {
-        Map<String, Object> headers = new HashMap<>();
-        headers.put("type", event.getType());
-        processor.input().send(new GenericMessage<>(event, headers));
-    }
 
 }

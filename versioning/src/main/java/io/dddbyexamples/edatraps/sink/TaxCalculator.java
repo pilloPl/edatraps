@@ -17,10 +17,8 @@ public class TaxCalculator {
     }
 
 
-
-    @StreamListener(target = Sink.INPUT, condition = "headers['type'] == 'session-finished-v2'")
-    public void handle(ChargingSessionFinishedV2 event) {
-        System.out.println("type2");
+    @StreamListener(target = Sink.INPUT)
+    public void handle(ChargingSessionFinished event) {
 
     }
 
