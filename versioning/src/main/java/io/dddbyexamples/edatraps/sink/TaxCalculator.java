@@ -17,7 +17,7 @@ public class TaxCalculator {
     }
 
 
-    @StreamListener(target = Sink.INPUT)
+    @StreamListener(target = Sink.INPUT, condition = "headers['type'] == 'session-finished'")
     public void handle(ChargingSessionFinished event) {
 
     }
