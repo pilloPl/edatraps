@@ -23,7 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -46,7 +47,6 @@ public class EventTranslatorTest {
 
     @Test
     public void shouldCopyAndTranslateEvents() throws IOException {
-
 
     }
 
