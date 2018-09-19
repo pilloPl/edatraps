@@ -7,6 +7,7 @@ import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
 @Component
@@ -22,9 +23,11 @@ public class TaxCalculator {
     }
 
     @StreamListener(target = Sink.INPUT, condition = "headers['type'] == 'session-finished'")
+    @Transactional
     public void handle(ChargingSessionFinished event) {
 
     }
+
 
 
     private BigDecimal getTaxRate() {
