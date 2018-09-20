@@ -34,7 +34,9 @@ public class EdatrapsApplication {
 	@StreamListener(Processor.INPUT)
 	@SendTo(Processor.OUTPUT)
 	public Message<ChargingSessionFinishedV2> translate(Message<ChargingSessionFinished> msg) {
-		return null;
+		ChargingSessionFinished event = msg.getPayload();
+		ChargingSessionFinishedV2 v2 = new ChargingSessionFinishedV2(event.getSessionId(), event.getWhen(), event.getCost(), "we did not care");
+		return new GenericMessage<>(v2);
 	}
 
 

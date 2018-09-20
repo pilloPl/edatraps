@@ -48,8 +48,24 @@ public class EventTranslatorTest {
     @Test
     public void shouldCopyAndTranslateEvents() throws IOException {
 
+        //when
+        Instant now = Instant.now();
+        oldEvent("S1", now, BigDecimal.TEN);
+
+        //then
+        newEvent("S1", now, BigDecimal.TEN, "we did not care");
+
     }
 
+    private void newEvent(String id, Instant when, BigDecimal cost, String customer) throws IOException {
+        ChargingSessionFinishedV2 expected = new ChargingSessionFinishedV2(id, when, cost, customer);
+        ChargingSessionFinishedV2 actual = objectMapper.readValue(eventsV2.poll().getPayload().toString(), ChargingSessionFinishedV2.class);
+        assertThat(actual).isEqualToComparingFieldByField(expected);
+    }
+
+    private void oldEvent(String id, Instant when, BigDecimal cost) {
+        processor.input().send(new GenericMessage<>(new ChargingSessionFinished(id, when, cost)));
+    }
 
 
 }

@@ -13,6 +13,7 @@ public class ChargingSessionFinished implements DomainEvent {
 
     private String sessionId;
     private BigDecimal cost;
+    private String customerName = "we did not care";
 
     @Override
     public String getType() {

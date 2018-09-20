@@ -32,8 +32,26 @@ public class TaxCalculatorTest {
 
     @Test
     public void shouldCorrectlyCalculateTaxes() {
+        //given
+        Instant now = now();
+        taxRateForEnergyChanged(now, new BigDecimal(0.19));
+        sessionWasFinished("S1", now, new BigDecimal(100));
+        taxRateForEnergyChanged(now.plusSeconds(60), new BigDecimal(0.18));
+        sessionWasFinished("S2", now.plusSeconds(120), new BigDecimal(1000));
 
 
+        //then
+        thereIsTaxaxForSession("S1", new BigDecimal(19));
+        thereIsTaxaxForSession("S2", new BigDecimal(180));
+
+
+    }
+
+    private void taxRateForEnergyChanged(Instant when, BigDecimal newRate) {
+        TaxRateChanged event = new TaxRateChanged(when, newRate, "energy");
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("type", event.getType());
+        sink.input().send(new GenericMessage<>(event, headers));
     }
 
     private void sessionWasFinished(String session, Instant when, BigDecimal cost) {

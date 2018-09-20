@@ -1,6 +1,7 @@
 package io.dddbyexamples.edatraps;
 
 import io.dddbyexamples.edatraps.infrastructure.TaxRepository;
+import io.dddbyexamples.edatraps.model.Tax;
 import io.dddbyexamples.edatraps.sink.ChargingSessionFinished;
 import io.dddbyexamples.edatraps.sink.ChargingSessionFinishedV2;
 import org.junit.Test;
@@ -12,15 +13,9 @@ import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.Year;
-import java.time.ZoneId;
-import java.time.temporal.TemporalAmount;
-import java.time.temporal.TemporalUnit;
+import java.time.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,8 +32,27 @@ public class TaxCalculatorTest {
 
     @Test
     public void shouldCorrectlySumTaxes() {
+        //given
+        sessionWasFinished("S1", Instant.now(), new BigDecimal(100), new BigDecimal(0.19));
+        sessionWasFinished("S2", ZonedDateTime.now().plusYears(1).toInstant(), new BigDecimal(1000), new BigDecimal(0.18));
 
 
+        //then
+        thereIsTax("S1", new BigDecimal(19));
+        thereIsTax("S2", new BigDecimal(180));
+
+    }
+
+    private void thereIsTax(String id, BigDecimal expectedTax) {
+        Tax tax = taxRepository.findBySessionId(id);
+        assertThat(tax.getValue()).isEqualByComparingTo(expectedTax);
+    }
+
+    private void sessionWasFinished(String id, Instant when, BigDecimal cost, BigDecimal taxRate) {
+        ChargingSessionFinishedV2 event = new ChargingSessionFinishedV2(id, when, cost, taxRate);
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("type", event.getType());
+        sink.input().send(new GenericMessage<>(event, headers));
     }
 
 

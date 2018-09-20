@@ -1,6 +1,7 @@
 package io.dddbyexamples.edatraps;
 
 import io.dddbyexamples.edatraps.model.ChargingSessionFinished;
+import io.dddbyexamples.edatraps.model.ChargingSessionFinishedV2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.stream.annotation.EnableBinding;
@@ -31,11 +32,12 @@ public class EventsProducer {
 
 	@Scheduled(fixedRate = 500L)
 	public void sessionClosed() {
-		ChargingSessionFinished event = new ChargingSessionFinished("session", Instant.now(), BigDecimal.TEN);
-		Map<String, Object> headers = new HashMap<>();
-		headers.put("type", event.getType());
 
-		source.output().send(new GenericMessage<>(event, headers));
+		ChargingSessionFinishedV2 eventV2 = new ChargingSessionFinishedV2("session", Instant.now(), BigDecimal.TEN, "Pieter");
+		Map<String, Object> headersV2 = new HashMap<>();
+		headersV2.put("type", eventV2.getType());
+
+		source.output().send(new GenericMessage<>(eventV2, headersV2));
 
 	}
 }

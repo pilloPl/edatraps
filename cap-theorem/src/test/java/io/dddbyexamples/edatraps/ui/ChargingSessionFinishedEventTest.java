@@ -48,8 +48,22 @@ public class ChargingSessionFinishedEventTest {
 
     @Test
     public void shouldEmitAnEvent() {
+        //given
+        chargerSendsInfoThatSessionWasStarted();
 
+        //when
+        chargerSendsInfoThatSessionWasFinished();
 
+        //then
+        sessionMarkedAsFinished();
+        Awaitility.await().atMost(Duration.FIVE_SECONDS)
+        .until(this::eventWasPublished);
+
+    }
+
+    private boolean eventWasPublished() {
+        Message msg = events.poll();
+        return msg != null && msg.getHeaders().containsValue("session-finished");
     }
 
     private void sessionMarkedAsFinished() {

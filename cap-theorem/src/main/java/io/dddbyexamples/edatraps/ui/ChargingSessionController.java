@@ -45,11 +45,12 @@ class ChargingSessionController {
         ChargingSession session = chargingSessionRepository.findById(stopTransaction.getId())
                 .orElseThrow(() -> new IllegalStateException("Session was never started!"));
         session.finishedAt(now());
-        sendEvent(new ChargingSessionFinished(stopTransaction.getId(), now(), BigDecimal.TEN));
+        eventPublisher.save(new ChargingSessionFinished(stopTransaction.getId(), now(), BigDecimal.TEN));
+
         return ResponseEntity.ok().build();
     }
 
-    private void sendEvent(@RequestBody ChargingSessionFinished event) {
+    private void sendEvent(ChargingSessionFinished event) {
         Map<String, Object> headers = new HashMap<>();
         headers.put("type", event.getType());
         source.output().send(new GenericMessage<>(event, headers));
